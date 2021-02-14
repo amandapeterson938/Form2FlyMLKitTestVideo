@@ -23,8 +23,8 @@
                                     <action selector="watchVidBtn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YWx-b4-NPY"/>
                                 </connections>
                             </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="applelogo" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="lbz-cF-PUR">
-                                <rect key="frame" x="20" y="269.5" width="374" height="353"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lbz-cF-PUR">
+                                <rect key="frame" x="20" y="269" width="374" height="354.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="374" id="V9M-3q-aJl"/>
                                     <constraint firstAttribute="height" constant="354.5" id="llm-yJ-ZVx"/>
@@ -52,7 +52,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="applelogo" catalog="system" width="103" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
