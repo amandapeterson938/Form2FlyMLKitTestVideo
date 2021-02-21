@@ -32,37 +32,33 @@ class ViewController: UIViewController {
             var frameForTimes = [NSValue]()
             
             var curSec = Float(0.0)
-            var cnt = Float(1)
-            let numOfFrames = Float(70)
+            var cnt = Float(0)
+            let numOfFrames = Float(30)
             let secInc = Float(1 / numOfFrames)
             while((curSec + secInc) < videoSec) {
+                print(curSec)
                 frameForTimes.append(curSec as NSValue)
                 curSec = Float((secInc * cnt))
                 cnt = cnt + 1
-                
-                //print(String(cnt) + ": " + String(curSec))
-                
             } //end while (fills frameForTimes)
+            print(cnt)
             
-            var poseArray: Array<UIImage> = []
             
+            var testcounter = 0
             let options = AccuratePoseDetectorOptions()
             options.detectorMode = .stream
             let poseDetector = PoseDetector.poseDetector(options: options)
-            var inc = 0
+
             generator.generateCGImagesAsynchronously(forTimes: frameForTimes, completionHandler: {requestedTime, image, actualTime, result, error in
                 DispatchQueue.main.async {
                     if let image = image {
-                        poseArray.append(UIImage(cgImage: image))
-                        
-                        
                         let visionImg = VisionImage(image: UIImage(cgImage: image))
                         
-                        
-                        DispatchQueue.global(qos: .background).async { //Background thread
+                        DispatchQueue.global(qos: .background).async {
+                            //background thread
                             var results: [Pose]?
                             do {
-                                results = try poseDetector.results(in: visionImg)
+                                results = try poseDetector.results(in:visionImg)
                             }
                             catch let error {
                                 print("Failed to detect pose with error: \(error.localizedDescription).")
@@ -72,12 +68,9 @@ class ViewController: UIViewController {
                                 return
                             }
                             
-                            DispatchQueue.main.async { //Ran on main queue
-                                
+                            DispatchQueue.main.async {
                                 for pose in detectedPoses {
                                     let noseLM = (pose.landmark(ofType: .nose))
-                                    print("Pose: \(inc)/\(poseArray.count) + \(noseLM.position)")
-                                    inc = inc + 1
                                     let leftEyeInnerLM = (pose.landmark(ofType: .leftEyeInner))
                                     let leftEyeLM = (pose.landmark(ofType: .leftEye))
                                     let leftEyeOuterLM = (pose.landmark(ofType: .leftEyeOuter))
@@ -110,75 +103,87 @@ class ViewController: UIViewController {
                                     let rightHeelLM = (pose.landmark(ofType: .rightHeel))
                                     let leftToeLM = (pose.landmark(ofType: .leftToe))
                                     let rightToeLM = (pose.landmark(ofType: .rightToe))
-                                                    
-                                    //let imgDr = self.myImgView.image
-                                    // let imgDr = poseArray[inc+1]
+                                    
+                                    
+                                    
+                                    // print("Nose: \(testcounter) \(noseLM.position)")
+                                    
+                                    
+                                    
                                     let imgDr = UIImage(cgImage: image)
-                                                    
+                                    
                                     UIGraphicsBeginImageContext(imgDr.size)
                                     imgDr.draw(at: CGPoint.zero)
-                                    let context = UIGraphicsGetCurrentContext()!
+                                    let context = UIGraphicsGetCurrentContext()
                                     
-                                    context.setStrokeColor(UIColor.red.cgColor)
-                                    context.setAlpha(0.5)
-                                    context.setLineWidth(10.0)
-                                    
-                                    self.checkFrameLike(noseLM, context)
-                                    self.checkFrameLike(leftEyeInnerLM, context)
-                                    self.checkFrameLike(leftEyeLM, context)
-                                    self.checkFrameLike(leftEyeOuterLM, context)
-                                    self.checkFrameLike(rightEyeInnerLM, context)
-                                    self.checkFrameLike(rightEyeLM, context)
-                                    self.checkFrameLike(rightEyeOuterLM, context)
-                                    self.checkFrameLike(leftEarLM, context)
-                                    self.checkFrameLike(rightEarLM, context)
-                                    self.checkFrameLike(mouthLeftLM, context)
-                                    self.checkFrameLike(mouthRightLM, context)
-                                    self.checkFrameLike(leftShoulderLM, context)
-                                    self.checkFrameLike(rightShoulderLM, context)
-                                    self.checkFrameLike(leftElbowLM, context)
-                                    self.checkFrameLike(rightElbowLM, context)
-                                    self.checkFrameLike(leftWristLM, context)
-                                    self.checkFrameLike(rightWristLM, context)
-                                    self.checkFrameLike(leftPinkyFingerLM, context)
-                                    self.checkFrameLike(rightPinkyFingerLM, context)
-                                    self.checkFrameLike(leftIndexFingerLM, context)
-                                    self.checkFrameLike(rightIndexFingerLM, context)
-                                    self.checkFrameLike(leftThumbLM, context)
-                                    self.checkFrameLike(rightThumbLM, context)
-                                    self.checkFrameLike(leftHipLM, context)
-                                    self.checkFrameLike(rightHipLM, context)
-                                    self.checkFrameLike(leftKneeLM, context)
-                                    self.checkFrameLike(rightKneeLM, context)
-                                    self.checkFrameLike(leftAnkleLM, context)
-                                    self.checkFrameLike(rightAnkleLM, context)
-                                    self.checkFrameLike(leftHeelLM, context)
-                                    self.checkFrameLike(rightHeelLM, context)
-                                    self.checkFrameLike(leftToeLM, context)
-                                    self.checkFrameLike(rightToeLM, context)
+                                    context?.setStrokeColor(UIColor.red.cgColor)
+                                    context?.setAlpha(0.5)
+                                    context?.setLineWidth(10.0)
                                     
                                     
-                                    context.drawPath(using: .stroke) // or .fillStroke if need filling
-                                                         
-                                    // Save the context as a new UIImage
+                                    
+                                    self.checkFrameLike(noseLM, context!)
+                                    self.checkFrameLike(leftEyeInnerLM, context!)
+                                    self.checkFrameLike(leftEyeLM, context!)
+                                    self.checkFrameLike(leftEyeOuterLM, context!)
+                                    self.checkFrameLike(rightEyeInnerLM, context!)
+                                    self.checkFrameLike(rightEyeLM, context!)
+                                    self.checkFrameLike(rightEyeOuterLM, context!)
+                                    self.checkFrameLike(leftEarLM, context!)
+                                    self.checkFrameLike(rightEarLM, context!)
+                                    self.checkFrameLike(mouthLeftLM, context!)
+                                    self.checkFrameLike(mouthRightLM, context!)
+                                    self.checkFrameLike(leftShoulderLM, context!)
+                                    self.checkFrameLike(rightShoulderLM, context!)
+                                    self.checkFrameLike(leftElbowLM, context!)
+                                    self.checkFrameLike(rightElbowLM, context!)
+                                    self.checkFrameLike(leftWristLM, context!)
+                                    self.checkFrameLike(rightWristLM, context!)
+                                    self.checkFrameLike(leftPinkyFingerLM, context!)
+                                    self.checkFrameLike(rightPinkyFingerLM, context!)
+                                    self.checkFrameLike(leftIndexFingerLM, context!)
+                                    self.checkFrameLike(rightIndexFingerLM, context!)
+                                    self.checkFrameLike(leftThumbLM, context!)
+                                    self.checkFrameLike(rightThumbLM, context!)
+                                    self.checkFrameLike(leftHipLM, context!)
+                                    self.checkFrameLike(rightHipLM, context!)
+                                    self.checkFrameLike(leftKneeLM, context!)
+                                    self.checkFrameLike(rightKneeLM, context!)
+                                    self.checkFrameLike(leftAnkleLM, context!)
+                                    self.checkFrameLike(rightAnkleLM, context!)
+                                    self.checkFrameLike(leftHeelLM, context!)
+                                    self.checkFrameLike(rightHeelLM, context!)
+                                    self.checkFrameLike(leftToeLM, context!)
+                                    self.checkFrameLike(rightToeLM, context!)
+                                    
+                                    
+                                    
+                                    
+                                    context?.drawPath(using: .stroke)
+                                    
                                     let myImage = UIGraphicsGetImageFromCurrentImageContext()
                                     UIGraphicsEndImageContext()
-                                                    
+                                    
                                     self.myImgView.image = myImage
                                     
-                                    
-                                } // for poses
-                            } //end async on main queue
+                                } //end for pose in detectedPoses
+                            } // end dispatchqueue main async for detecting poses in image
+                        }//end dispatchqueue pose detector
+                        
+                        //self.myImgView.image = UIImage(cgImage: image)
+                        DispatchQueue.global(qos: .background).async { //Background thread
+                            //print(image.hashValue)
                         } //end background async
                         
                         
-                        self.myImgView.image = UIImage(cgImage: image)
+                        //self.myImgView.image = UIImage(cgImage: image)
                     }
                 }
+                usleep(30000) 
+                testcounter = testcounter + 1
             }) // end generator to put image frames in Poses
-            
-            
-            
+            generator.cancelAllCGImageGeneration()
+            print("Will this show!")
         } //end if path of vdeo
     } //end watchVidBtn
     
